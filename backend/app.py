@@ -3,14 +3,20 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, create_access_token
 from flask_cors import CORS
+from werkzeug.utils import secure_filename  # Make sure to import secure_filename
+import os
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)
 
 # Configure SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your-secret-key'
+app.config['UPLOAD_FOLDER'] = 'uploads/audio'  # Define upload folder
+
+# Create the uploads folder if it doesn't exist
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize extensions
 db = SQLAlchemy(app)
@@ -27,16 +33,13 @@ class User(db.Model):
 # AudioFile model for the database
 class AudioFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     filename = db.Column(db.String(120), nullable=False)
-    data = db.Column(db.LargeBinary, nullable=False)
-    user = db.relationship('User', backref=db.backref('audio_files', lazy=True))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 # Create the database tables and default admin user
 with app.app_context():
     db.create_all()
 
-    # Check if admin user exists, if not, create one
     if not User.query.filter_by(username='admin').first():
         hashed_password = bcrypt.generate_password_hash('password').decode('utf-8')
         admin_user = User(username='admin', password=hashed_password, role='admin')
@@ -72,41 +75,23 @@ def login():
 def upload_audio():
     current_user = get_jwt_identity()
     user_id = current_user['id']
-    
+
     if 'file' not in request.files:
-        print("Error: No file part in the request")
-        return jsonify({'message': 'No file part'}), 400
+        return jsonify({'message': 'No audio file found'}), 400
 
     file = request.files['file']
-    
-    if file.filename == '':
-        print("Error: No selected file")
-        return jsonify({'message': 'No selected file'}), 400
 
-    print(f"Uploading file: {file.filename}")
+    if file and file.filename != '':
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
 
-    if not allowed_file(file.filename):
-        print(f"Error: File type not allowed - {file.filename}")
-        return jsonify({'message': 'File type not allowed'}), 400
-
-    try:
-        new_audio = AudioFile(user_id=user_id, filename=file.filename, data=file.read())
+        new_audio = AudioFile(filename=filename, user_id=user_id)
         db.session.add(new_audio)
         db.session.commit()
-        print(f"Success: Audio file uploaded - {file.filename}")
-        return jsonify({'message': 'Audio file uploaded successfully!'}), 201
-    except Exception as e:
-        print(f"Error: {str(e)}")  # Log the exception
-        return jsonify({'message': 'An error occurred while uploading the file.'}), 500
 
-
-
-def allowed_file(filename):
-    # Define allowed file types here
-    ALLOWED_EXTENSIONS = {'mp3', 'wav', 'ogg'}
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
+        return jsonify({'message': 'File uploaded successfully!'}), 201
+    return jsonify({'message': 'File upload failed'}), 400
 
 # Get user's audio files
 @app.route('/audio-files', methods=['GET'])

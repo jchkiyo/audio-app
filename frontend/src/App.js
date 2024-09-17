@@ -9,7 +9,7 @@ import Home from './components/Home';
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [role, setRole] = useState(localStorage.getItem('role'));
-  const [username, setUsername] = useState(''); // Add username state
+  const [username, setUsername] = useState('');
 
   const handleLogout = () => {
     setToken(null);
@@ -28,7 +28,7 @@ function App() {
         {role === 'admin' ? (
           <Route path="/dashboard" element={<AdminDashboard token={token} setToken={setToken} setRole={setRole} handleLogout={handleLogout} />} />
         ) : (
-          <Route path="/user-dashboard" element={<UserDashboard username={username} setToken={setToken} setRole={setRole} handleLogout={handleLogout} />} />
+          <Route path="/user-dashboard" element={<UserDashboard username={username} token={token} setToken={setToken} setRole={setRole} handleLogout={handleLogout} />} />
         )}
       </Routes>
     </Router>

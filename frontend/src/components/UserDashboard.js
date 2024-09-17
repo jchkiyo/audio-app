@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const UserDashboard = ({ username, setToken, setRole }) => {
+const UserDashboard = ({ username, token, setToken, setRole }) => {
   const [audioFiles, setAudioFiles] = useState([]);
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
@@ -13,61 +13,56 @@ const UserDashboard = ({ username, setToken, setRole }) => {
 
   const fetchAudioFiles = async () => {
     try {
-        const response = await axios.get('http://localhost:5000/audio-files', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
-        
-        // Check if there are any audio files returned
-        if (response.data.length === 0) {
-            console.log('No audio files found.');
-            return; // Ignore if no files are found
-        }
+      const response = await axios.get('http://localhost:5000/audio-files', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        setAudioFiles(response.data); // Set state only if there are files
+      if (response.data.length === 0) {
+        console.log('No audio files found.');
+        return;
+      }
+
+      setAudioFiles(response.data);
     } catch (error) {
-        console.error('Error fetching audio files:', error);
+      console.error('Error fetching audio files:', error);
     }
-};
-
+  };
 
   const handleFileUpload = async () => {
     if (!file) {
-        console.error('No file selected for upload.');
-        return;
+      console.error('No file selected for upload.');
+      return;
     }
 
     const formData = new FormData();
     formData.append('file', file);
 
-    console.log(`Uploading file: ${file.name}, size: ${file.size} bytes`);
-
     try {
-        await axios.post('http://localhost:5000/upload', formData, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        });
-        fetchAudioFiles(); // Refresh the audio file list
+      await axios.post('http://localhost:5000/upload', formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchAudioFiles(); // Refresh the audio file list
+      setFile(null); // Reset file input
     } catch (error) {
-        if (error.response) {
-            console.error('Upload failed:', error.response.data);
-        } else {
-            console.error('Error uploading file:', error.message);
-        }
+      console.error('Error uploading file:', error.response?.data || error.message);
     }
-};
-
-
+  };
 
   const handleDelete = async (fileId) => {
-    await axios.delete(`http://localhost:5000/audio-files/${fileId}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    });
-    fetchAudioFiles(); // Refresh the audio file list
+    try {
+      await axios.delete(`http://localhost:5000/audio-files/${fileId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchAudioFiles(); // Refresh the audio file list
+    } catch (error) {
+      console.error('Error deleting file:', error.response?.data || error.message);
+    }
   };
 
   const handlePlay = (audioFile) => {
-    const audioUrl = URL.createObjectURL(new Blob([audioFile.data]));
+    const audioUrl = `http://localhost:5000/audio-files/${audioFile.id}`; // Update to fetch directly
     const audio = new Audio(audioUrl);
-    audio.play();
+    audio.play().catch(err => console.error('Playback failed:', err));
   };
 
   const handleLogout = () => {
@@ -80,7 +75,7 @@ const UserDashboard = ({ username, setToken, setRole }) => {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h1>Welcome, {username ? username : 'Guest'}!</h1>
+      <h1>Welcome, {username || 'Guest'}!</h1>
       <p>Here you can manage your audio files and settings.</p>
 
       <input type="file" onChange={(e) => setFile(e.target.files[0])} />
