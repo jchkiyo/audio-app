@@ -1,36 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const UserDashboard = ({ token }) => {
-  const [userInfo, setUserInfo] = useState(null);
+const UserDashboard = ({ token, setToken, setRole }) => {
+  const [user, setUser] = useState({ username: '' });
+  const navigate = useNavigate();  // Use for redirection
 
   useEffect(() => {
-    // Fetch user information
-    const fetchUserInfo = async () => {
+    // Fetch user data when the component loads
+    const fetchUserData = async () => {
       try {
         const response = await axios.get('http://localhost:5000/dashboard', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          headers: { Authorization: `Bearer ${token}` },
         });
-        setUserInfo(response.data);
+        setUser(response.data);  // Set the user data (username, etc.)
       } catch (error) {
-        console.error('Error fetching user info:', error);
+        console.error('Failed to fetch user data:', error);
       }
     };
 
-    fetchUserInfo();
+    fetchUserData();
   }, [token]);
 
-  if (!userInfo) {
-    return <div>Loading...</div>;
-  }
+  // Handle Logout
+  const handleLogout = () => {
+    setToken(null);
+    setRole(null);
+    localStorage.removeItem('token');  // Clear token from localStorage
+    localStorage.removeItem('role');   // Clear role from localStorage
+    navigate('/login');  // Redirect to login page
+  };
 
   return (
     <div>
-      <h1>Welcome to the User Dashboard, {userInfo.username}!</h1>
-      <p>Your role: {userInfo.role}</p>
-      {/* You can add more details here like account info, recent activity, etc. */}
+      <h1>Welcome, {user.username}!</h1>
+      <p>User Dashboard</p>
+      
+      {/* Logout button */}
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 };

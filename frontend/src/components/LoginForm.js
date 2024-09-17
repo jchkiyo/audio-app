@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate for navigation
+import { useNavigate, Link } from 'react-router-dom';  // Import Link for navigation
 
 const LoginForm = ({ setToken, setRole }) => {
   const [username, setUsername] = useState('');
@@ -49,6 +49,14 @@ const LoginForm = ({ setToken, setRole }) => {
         required
       />
       <button type="submit">Login</button>
+      
+      {/* Add a Register button */}
+      <div>
+        <p>Don't have an account?</p>
+        <Link to="/register">
+          <button type="button">Register</button>
+        </Link>
+      </div>
     </form>
   );
 };
