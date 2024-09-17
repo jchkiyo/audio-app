@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, create_access_token
 from flask_cors import CORS
-import os
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -24,6 +23,14 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(20), default='user')
+
+# AudioFile model for the database
+class AudioFile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    filename = db.Column(db.String(120), nullable=False)
+    data = db.Column(db.LargeBinary, nullable=False)
+    user = db.relationship('User', backref=db.backref('audio_files', lazy=True))
 
 # Create the database tables and default admin user
 with app.app_context():
@@ -49,17 +56,78 @@ def register():
     db.session.commit()
     return jsonify({'message': 'User created'}), 201
 
-
 # Login route
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     user = User.query.filter_by(username=data['username']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
-        access_token = create_access_token(identity={'username': user.username, 'role': user.role})
-        return jsonify({'token': access_token, 'role': user.role, 'username': user.username}), 200  # Include username
+        access_token = create_access_token(identity={'id': user.id, 'username': user.username, 'role': user.role})
+        return jsonify({'token': access_token, 'role': user.role, 'username': user.username}), 200
     return jsonify({'message': 'Invalid credentials'}), 401
 
+# Upload audio file route
+@app.route('/upload', methods=['POST'])
+@jwt_required()
+def upload_audio():
+    current_user = get_jwt_identity()
+    user_id = current_user['id']
+    
+    if 'file' not in request.files:
+        print("Error: No file part in the request")
+        return jsonify({'message': 'No file part'}), 400
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        print("Error: No selected file")
+        return jsonify({'message': 'No selected file'}), 400
+
+    print(f"Uploading file: {file.filename}")
+
+    if not allowed_file(file.filename):
+        print(f"Error: File type not allowed - {file.filename}")
+        return jsonify({'message': 'File type not allowed'}), 400
+
+    try:
+        new_audio = AudioFile(user_id=user_id, filename=file.filename, data=file.read())
+        db.session.add(new_audio)
+        db.session.commit()
+        print(f"Success: Audio file uploaded - {file.filename}")
+        return jsonify({'message': 'Audio file uploaded successfully!'}), 201
+    except Exception as e:
+        print(f"Error: {str(e)}")  # Log the exception
+        return jsonify({'message': 'An error occurred while uploading the file.'}), 500
+
+
+
+def allowed_file(filename):
+    # Define allowed file types here
+    ALLOWED_EXTENSIONS = {'mp3', 'wav', 'ogg'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+
+# Get user's audio files
+@app.route('/audio-files', methods=['GET'])
+@jwt_required()
+def get_audio_files():
+    current_user = get_jwt_identity()
+    user_id = current_user['id']
+    audio_files = AudioFile.query.filter_by(user_id=user_id).all()
+    return jsonify([{'id': af.id, 'filename': af.filename} for af in audio_files]), 200
+
+# Delete audio file
+@app.route('/audio-files/<int:file_id>', methods=['DELETE'])
+@jwt_required()
+def delete_audio(file_id):
+    current_user = get_jwt_identity()
+    audio_file = AudioFile.query.get(file_id)
+    if audio_file and audio_file.user_id == current_user['id']:
+        db.session.delete(audio_file)
+        db.session.commit()
+        return jsonify({'message': 'Audio file deleted successfully!'}), 200
+    return jsonify({'message': 'Audio file not found or permission denied!'}), 404
 
 # Admin routes (admin-only)
 @app.route('/admin', methods=['GET'])
