@@ -1,31 +1,30 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';  // Import Link for navigation
+import { useNavigate, Link } from 'react-router-dom';
 
-const LoginForm = ({ setToken, setRole }) => {
-  const [username, setUsername] = useState('');
+const LoginForm = ({ setToken, setRole, setUsername }) => {
+  const [username, setUsernameInput] = useState(''); // Use setUsernameInput for state
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();  // Initialize navigate for redirecting users
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Send the login request to the backend
       const response = await axios.post('http://localhost:5000/login', {
         username,
         password,
       });
 
-      // Store the token and role
-      const { token, role } = response.data;
+      const { token, role, username: loggedInUsername } = response.data; // Ensure you get the username
       setToken(token);
       setRole(role);
+      setUsername(loggedInUsername); // Set the username in the parent component's state
 
-      // Redirect based on the role
+      // Navigate based on user role
       if (role === 'admin') {
-        navigate('/dashboard');  // Redirect to the admin dashboard for admin
+        navigate('/dashboard');
       } else {
-        navigate('/user-dashboard');  // Redirect to the user dashboard for regular users
+        navigate('/user-dashboard'); // No need to pass username in state, it's now in context
       }
     } catch (error) {
       console.error('Login failed:', error);
@@ -37,7 +36,7 @@ const LoginForm = ({ setToken, setRole }) => {
       <input
         type="text"
         value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        onChange={(e) => setUsernameInput(e.target.value)} // Update state with input value
         placeholder="Username"
         required
       />
@@ -49,7 +48,7 @@ const LoginForm = ({ setToken, setRole }) => {
         required
       />
       <button type="submit">Login</button>
-      
+
       {/* Add a Register button */}
       <div>
         <p>Don't have an account?</p>

@@ -1,43 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
-const UserDashboard = ({ token, setToken, setRole }) => {
-  const [user, setUser] = useState({ username: '' });
-  const navigate = useNavigate();  // Use for redirection
+const UserDashboard = ({ username, setToken, setRole }) => {
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    // Fetch user data when the component loads
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/dashboard', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(response.data);  // Set the user data (username, etc.)
-      } catch (error) {
-        console.error('Failed to fetch user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, [token]);
-
-  // Handle Logout
   const handleLogout = () => {
     setToken(null);
     setRole(null);
-    localStorage.removeItem('token');  // Clear token from localStorage
-    localStorage.removeItem('role');   // Clear role from localStorage
-    navigate('/login');  // Redirect to login page
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    navigate('/'); // Redirect to home page
   };
 
   return (
-    <div>
-      <h1>Welcome, {user.username}!</h1>
-      <p>User Dashboard</p>
-      
-      {/* Logout button */}
-      <button onClick={handleLogout}>Logout</button>
+    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <h1>Welcome, {username ? username : 'Guest'}!</h1>
+      <p>Here you can manage your audio files and settings.</p>
+      <button onClick={handleLogout} style={{ marginTop: '20px' }}>Logout</button>
     </div>
   );
 };

@@ -1,29 +1,22 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, create_access_token
 from flask_cors import CORS
-from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# Configure SQLAlchemy and file uploads
+# Configure SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your-secret-key'
-app.config['UPLOAD_FOLDER'] = 'uploads/audio'  # Replace with the folder to store audio files
-
-# Create the uploads folder if it doesn't exist
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Initialize extensions
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
-
-
 
 # User model for the database
 class User(db.Model):
@@ -31,15 +24,6 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(20), default='user')
-    audio_files = db.relationship('AudioFile', backref='user', lazy=True)
-
-# AudioFile model for storing uploaded audio metadata
-class AudioFile(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(120), nullable=False)
-    description = db.Column(db.String(255))
-    category = db.Column(db.String(50))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 # Create the database tables and default admin user
 with app.app_context():
@@ -65,6 +49,7 @@ def register():
     db.session.commit()
     return jsonify({'message': 'User created'}), 201
 
+
 # Login route
 @app.route('/login', methods=['POST'])
 def login():
@@ -72,66 +57,9 @@ def login():
     user = User.query.filter_by(username=data['username']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
         access_token = create_access_token(identity={'username': user.username, 'role': user.role})
-        return jsonify({'token': access_token, 'role': user.role}), 200
+        return jsonify({'token': access_token, 'role': user.role, 'username': user.username}), 200  # Include username
     return jsonify({'message': 'Invalid credentials'}), 401
 
-# User dashboard route (user only)
-@app.route('/dashboard', methods=['GET'])
-@jwt_required()
-def user_dashboard():
-    current_user = get_jwt_identity()
-    return jsonify({'username': current_user['username'], 'role': current_user['role']}), 200
-
-# Route to upload audio files with metadata
-@app.route('/upload', methods=['POST'])
-@jwt_required()
-def upload_audio():
-    current_user = get_jwt_identity()
-    user_id = User.query.filter_by(username=current_user['username']).first().id
-
-    if 'audio' not in request.files:
-        return jsonify({'message': 'No audio file found'}), 400
-
-    file = request.files['audio']
-    description = request.form.get('description')
-    category = request.form.get('category')
-
-    if file and file.filename != '':
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-
-        new_audio = AudioFile(filename=filename, description=description, category=category, user_id=user_id)
-        db.session.add(new_audio)
-        db.session.commit()
-
-        return jsonify({'message': 'File uploaded successfully!'}), 201
-    return jsonify({'message': 'File upload failed'}), 400
-
-# Route to view user-uploaded audio files
-@app.route('/user/audio', methods=['GET'])
-@jwt_required()
-def get_user_audio_files():
-    current_user = get_jwt_identity()
-    user_id = User.query.filter_by(username=current_user['username']).first().id
-
-    audio_files = AudioFile.query.filter_by(user_id=user_id).all()
-    files = [{'id': audio.id, 'filename': audio.filename, 'description': audio.description, 'category': audio.category} for audio in audio_files]
-
-    return jsonify(files), 200
-
-# Route to play specific audio file
-@app.route('/audio/play/<int:audio_id>', methods=['GET'])
-@jwt_required()
-def play_audio_file(audio_id):
-    current_user = get_jwt_identity()
-    user_id = User.query.filter_by(username=current_user['username']).first().id
-
-    audio_file = AudioFile.query.filter_by(id=audio_id, user_id=user_id).first()
-    if not audio_file:
-        return jsonify({'message': 'Audio file not found or unauthorized access'}), 404
-
-    return send_from_directory(app.config['UPLOAD_FOLDER'], audio_file.filename)
 
 # Admin routes (admin-only)
 @app.route('/admin', methods=['GET'])
