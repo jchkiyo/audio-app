@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, create_access_token
@@ -139,6 +139,21 @@ def delete_audio(file_id):
         db.session.commit()
         return jsonify({'message': 'Audio file deleted successfully!'}), 200
     return jsonify({'message': 'Audio file not found or permission denied!'}), 404
+
+
+
+
+@app.route('/audio-files/<int:file_id>', methods=['GET'])
+@jwt_required()
+def play_audio(file_id):
+    current_user = get_jwt_identity()
+    audio_file = AudioFile.query.get(file_id)
+
+    if audio_file and audio_file.user_id == current_user['id']:
+        return send_from_directory(app.config['UPLOAD_FOLDER'], audio_file.filename)
+    
+    return jsonify({'message': 'Audio file not found or permission denied!'}), 404
+
 
 # Admin routes (admin-only)
 @app.route('/admin', methods=['GET'])

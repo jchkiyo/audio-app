@@ -1,48 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ReactAudioPlayer from "react-audio-player"; // Import React Audio Player
 
 const UserDashboard = ({ username, token, setToken, setRole }) => {
   const [audioFiles, setAudioFiles] = useState([]);
   const [file, setFile] = useState(null);
+  const [currentAudioUrl, setCurrentAudioUrl] = useState(null); // State for the current audio URL
   const navigate = useNavigate();
-  const fileInputRef = useRef(null); // Define the ref here
+  const fileInputRef = useRef(null);
+
   useEffect(() => {
     fetchAudioFiles();
   }, []);
-
-  //send to app route /audio-files
-
-  const handleClearAll = async () => {
-    if (
-      window.confirm(
-        "Are you sure you want to clear all audio files and records?"
-      )
-    ) {
-      try {
-        const response = await axios.delete("http://localhost:5000/clear-all", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        alert(response.data.message); // Display the success message
-        fetchAudioFiles(); // Refresh the audio file list (will be empty now)
-      } catch (error) {
-        console.error(
-          "Error clearing all files and records:",
-          error.response?.data || error.message
-        );
-        alert("Failed to clear all files and records.");
-      }
-    }
-  };
 
   const fetchAudioFiles = async () => {
     try {
       const response = await axios.get("http://localhost:5000/audio-files", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      setAudioFiles(response.data); // This triggers re-render since state is updated
+      setAudioFiles(response.data);
     } catch (error) {
       console.error("Error fetching audio files:", error);
     }
@@ -82,8 +59,8 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
         }
       );
 
-      alert(response.data.message); // Display the success message
-      await fetchAudioFiles(); // Refresh the audio file list and update the state
+      alert(response.data.message);
+      fetchAudioFiles(); // Refresh the audio file list
     } catch (error) {
       console.error(
         "Error deleting file:",
@@ -92,10 +69,24 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
     }
   };
 
-  const handlePlay = (audioFile) => {
-    const audioUrl = `http://localhost:5000/audio-files/${audioFile.id}`; // Update to fetch directly
-    const audio = new Audio(audioUrl);
-    audio.play().catch((err) => console.error("Playback failed:", err));
+  const handlePlay = async (audioFile) => {
+    const audioUrl = `http://localhost:5000/audio-files/${audioFile.id}`; // Construct the URL
+
+    try {
+      const response = await axios.get(audioUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: "blob", // Specify that you're expecting a Blob response
+      });
+
+      // Create a Blob URL for the audio file
+      const url = URL.createObjectURL(new Blob([response.data]));
+      setCurrentAudioUrl(url); // Set the current audio URL for the player
+    } catch (error) {
+      console.error(
+        "Error fetching audio file:",
+        error.response?.data || error.message
+      );
+    }
   };
 
   const handleLogout = () => {
@@ -113,7 +104,7 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
 
       <input
         type="file"
-        ref={fileInputRef} // Attach the ref
+        ref={fileInputRef}
         onChange={(e) => setFile(e.target.files[0])}
       />
       <button onClick={handleFileUpload}>Upload</button>
@@ -132,6 +123,14 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
           ))
         )}
       </ul>
+
+      {currentAudioUrl && (
+        <ReactAudioPlayer
+          src={currentAudioUrl}
+          controls
+          onEnded={() => setCurrentAudioUrl(null)} // Clear the URL when finished
+        />
+      )}
 
       <button onClick={handleLogout} style={{ marginTop: "20px" }}>
         Logout
