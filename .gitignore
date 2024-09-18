@@ -1,0 +1,5 @@
+# Ignore Python virtual environment
+backend/venv/
+
+# Ignore specific PDF file
+[Fullstack] Assessment 1 - Audio Hosting Web Application.pdf
