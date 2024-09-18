@@ -1,5 +1,9 @@
 # Ignore Python virtual environment
 backend/venv/
-
+backend/venv/Scripts
+backend/venv/pyvenv.cfg
 # Ignore specific PDF file
 [Fullstack] Assessment 1 - Audio Hosting Web Application.pdf
+backend/venv/Scripts/pythonw.exe
+/backend/venv/Scripts
+\[Fullstack\] Assessment 1 - Audio Hosting Web Application.pdf

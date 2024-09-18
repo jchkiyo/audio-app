@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity, creat
 from flask_cors import CORS
 from werkzeug.utils import secure_filename  # Make sure to import secure_filename
 import os
+import shutil
 
 app = Flask(__name__)
 CORS(app)
@@ -23,14 +24,33 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
-# User model for the database
+
+
+@app.route('/clear-all', methods=['DELETE'])
+@jwt_required()
+def clear_all():
+    current_user = get_jwt_identity()
+    
+    # Clear all audio files from the uploads directory
+    audio_directory = app.config['UPLOAD_FOLDER']
+    if os.path.exists(audio_directory):
+        shutil.rmtree(audio_directory)  # Remove the entire directory
+    os.makedirs(audio_directory)  # Recreate the directory
+
+    # Clear all audio file records from the database
+    AudioFile.query.delete()
+    db.session.commit()
+
+    return jsonify({'message': 'All audio files and records cleared successfully!'}), 200
+
+# User model for the database(metadata)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(20), default='user')
 
-# AudioFile model for the database
+# AudioFile model for the database(metadata)
 class AudioFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(120), nullable=False)
@@ -40,7 +60,7 @@ class AudioFile(db.Model):
 with app.app_context():
     db.create_all()
 
-    if not User.query.filter_by(username='admin').first():
+    if not User.query.filter_by(username='admin').first(): #check if there is a username called admin
         hashed_password = bcrypt.generate_password_hash('password').decode('utf-8')
         admin_user = User(username='admin', password=hashed_password, role='admin')
         db.session.add(admin_user)
@@ -65,6 +85,7 @@ def login():
     data = request.get_json()
     user = User.query.filter_by(username=data['username']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
+        #create token to maintain secure authentication
         access_token = create_access_token(identity={'id': user.id, 'username': user.username, 'role': user.role})
         return jsonify({'token': access_token, 'role': user.role, 'username': user.username}), 200
     return jsonify({'message': 'Invalid credentials'}), 401
@@ -73,7 +94,7 @@ def login():
 @app.route('/upload', methods=['POST'])
 @jwt_required()
 def upload_audio():
-    current_user = get_jwt_identity()
+    current_user = get_jwt_identity() #based on create access token
     user_id = current_user['id']
 
     if 'file' not in request.files:
@@ -81,12 +102,17 @@ def upload_audio():
 
     file = request.files['file']
 
+    #Actual file save to filesystem, metadata send to db
+
     if file and file.filename != '':
         filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename) #save to uploads\audio
         file.save(filepath)
 
+        #sets the filename and the user_id that upload the file
         new_audio = AudioFile(filename=filename, user_id=user_id)
+
+        #add the new audiofile instance to the current database session
         db.session.add(new_audio)
         db.session.commit()
 
