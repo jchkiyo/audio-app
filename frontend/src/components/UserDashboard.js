@@ -167,22 +167,41 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
         {view === "list" && (
           <div className="audio-list-container">
             <h2>Your Audio Files</h2>
-            <ul className="audio-file-list">
-              {audioFiles.length === 0 ? (
-                <li>No files found.</li>
-              ) : (
-                audioFiles.map((audioFile) => (
-                  <li key={audioFile.id}>
-                    {audioFile.filename} - {audioFile.description} (
-                    {audioFile.category})
-                    <button onClick={() => handlePlay(audioFile)}>Play</button>
-                    <button onClick={() => handleDelete(audioFile.id)}>
-                      Delete
-                    </button>
-                  </li>
-                ))
-              )}
-            </ul>
+            <div className="audio-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>File Name</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {audioFiles.length === 0 ? (
+                    <tr>
+                      <td colSpan="4">No files found.</td>
+                    </tr>
+                  ) : (
+                    audioFiles.map((audioFile) => (
+                      <tr key={audioFile.id}>
+                        <td>{audioFile.filename}</td>
+                        <td>{audioFile.description}</td>
+                        <td>{audioFile.category}</td>
+                        <td>
+                          <button onClick={() => handlePlay(audioFile)}>
+                            Play
+                          </button>
+                          <button onClick={() => handleDelete(audioFile.id)}>
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
 
             {currentAudioUrl && (
               <ReactAudioPlayer
