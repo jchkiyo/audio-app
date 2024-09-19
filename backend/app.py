@@ -54,7 +54,10 @@ class User(db.Model):
 class AudioFile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(120), nullable=False)
+    description = db.Column(db.String(255), nullable=True)  # Add description
+    category = db.Column(db.String(50), nullable=True)       # Add category
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
 
 # Create the database tables and default admin user
 with app.app_context():
@@ -94,25 +97,22 @@ def login():
 @app.route('/upload', methods=['POST'])
 @jwt_required()
 def upload_audio():
-    current_user = get_jwt_identity() #based on create access token
-    user_id = current_user['id']
+    current_user = get_jwt_identity()
+    user_id = User.query.filter_by(username=current_user['username']).first().id
 
     if 'file' not in request.files:
         return jsonify({'message': 'No audio file found'}), 400
 
     file = request.files['file']
-
-    #Actual file save to filesystem, metadata send to db
+    description = request.form.get('description')
+    category = request.form.get('category')
 
     if file and file.filename != '':
         filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename) #save to uploads\audio
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
 
-        #sets the filename and the user_id that upload the file
-        new_audio = AudioFile(filename=filename, user_id=user_id)
-
-        #add the new audiofile instance to the current database session
+        new_audio = AudioFile(filename=filename, user_id=user_id, description=description, category=category)
         db.session.add(new_audio)
         db.session.commit()
 
@@ -126,7 +126,15 @@ def get_audio_files():
     current_user = get_jwt_identity()
     user_id = current_user['id']
     audio_files = AudioFile.query.filter_by(user_id=user_id).all()
-    return jsonify([{'id': af.id, 'filename': af.filename} for af in audio_files]), 200
+    return jsonify([
+        {
+            'id': af.id,
+            'filename': af.filename,
+            'description': af.description,
+            'category': af.category
+        } for af in audio_files
+    ]), 200
+
 
 # Delete audio file
 @app.route('/audio-files/<int:file_id>', methods=['DELETE'])
@@ -142,7 +150,7 @@ def delete_audio(file_id):
 
 
 
-
+#play audio 
 @app.route('/audio-files/<int:file_id>', methods=['GET'])
 @jwt_required()
 def play_audio(file_id):

@@ -2,17 +2,27 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ReactAudioPlayer from "react-audio-player"; // Import React Audio Player
+import "./css/UserDashboard.css"; // Import your CSS for styling
+import uploadIcon from "./images/upload.svg"; // Import your upload icon
+import listIcon from "./images/list.svg"; // Import your list icon
 
 const UserDashboard = ({ username, token, setToken, setRole }) => {
   const [audioFiles, setAudioFiles] = useState([]);
   const [file, setFile] = useState(null);
-  const [currentAudioUrl, setCurrentAudioUrl] = useState(null); // State for the current audio URL
+  const [currentAudioUrl, setCurrentAudioUrl] = useState(null);
+  const [audioDetails, setAudioDetails] = useState({
+    description: "",
+    category: "",
+  });
+  const [view, setView] = useState("upload");
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    fetchAudioFiles();
-  }, []);
+    if (view === "list") {
+      fetchAudioFiles();
+    }
+  }, [view]);
 
   const fetchAudioFiles = async () => {
     try {
@@ -33,21 +43,27 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("description", audioDetails.description);
+    formData.append("category", audioDetails.category);
 
     try {
       await axios.post("http://localhost:5000/upload", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("File uploaded successfully!");
-      fetchAudioFiles(); // Refresh the audio file list
-      setFile(null); // Clear the file input state
-      fileInputRef.current.value = ""; // Clear the file input visually
+      resetForm();
     } catch (error) {
       console.error(
         "Error uploading file:",
         error.response?.data || error.message
       );
     }
+  };
+
+  const resetForm = () => {
+    setFile(null);
+    setAudioDetails({ description: "", category: "" });
+    fileInputRef.current.value = ""; // Clear the file input visually
   };
 
   const handleDelete = async (fileId) => {
@@ -58,7 +74,6 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       alert(response.data.message);
       fetchAudioFiles(); // Refresh the audio file list
     } catch (error) {
@@ -70,17 +85,15 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
   };
 
   const handlePlay = async (audioFile) => {
-    const audioUrl = `http://localhost:5000/audio-files/${audioFile.id}`; // Construct the URL
+    const audioUrl = `http://localhost:5000/audio-files/${audioFile.id}`;
 
     try {
       const response = await axios.get(audioUrl, {
         headers: { Authorization: `Bearer ${token}` },
-        responseType: "blob", // Specify that you're expecting a Blob response
+        responseType: "blob",
       });
-
-      // Create a Blob URL for the audio file
       const url = URL.createObjectURL(new Blob([response.data]));
-      setCurrentAudioUrl(url); // Set the current audio URL for the player
+      setCurrentAudioUrl(url);
     } catch (error) {
       console.error(
         "Error fetching audio file:",
@@ -94,47 +107,138 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
     setRole(null);
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    navigate("/"); // Redirect to home page
+    navigate("/login"); // Redirect to login page
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles.length > 0) {
+      setFile(droppedFiles[0]); // Set the first dropped file
+    }
+  };
+
+  const openFileDialog = () => {
+    fileInputRef.current.click(); // Programmatically click the file input
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Welcome, {username || "Guest"}!</h1>
-      <p>Here you can manage your audio files and settings.</p>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={(e) => setFile(e.target.files[0])}
-      />
-      <button onClick={handleFileUpload}>Upload</button>
-
-      <h2>Your Audio Files</h2>
-      <ul>
-        {audioFiles.length === 0 ? (
-          <li>No files found.</li>
-        ) : (
-          audioFiles.map((audioFile) => (
-            <li key={audioFile.id}>
-              {audioFile.filename}
-              <button onClick={() => handlePlay(audioFile)}>Play</button>
-              <button onClick={() => handleDelete(audioFile.id)}>Delete</button>
-            </li>
-          ))
-        )}
-      </ul>
-
-      {currentAudioUrl && (
-        <ReactAudioPlayer
-          src={currentAudioUrl}
-          controls
-          onEnded={() => setCurrentAudioUrl(null)} // Clear the URL when finished
-        />
-      )}
-
-      <button onClick={handleLogout} style={{ marginTop: "20px" }}>
+    <div className="container">
+      <h1 style={{ display: "inline-block" }}>
+        Welcome, {username || "Guest"}!{" "}
+      </h1>
+      <button
+        onClick={handleLogout}
+        className="logout-button"
+        style={{ float: "right" }}
+      >
         Logout
       </button>
+      <p style={{ clear: "both" }}>Manage your audio files and settings.</p>
+
+      <div className="left-right-container">
+        {view === "upload" && (
+          <div className="upload-container">
+            <div
+              className="drag-drop-area"
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              onClick={openFileDialog} // Open file dialog on click
+            >
+              {file ? (
+                <p>File ready: {file.name}</p>
+              ) : (
+                <p>Drag and drop an audio file here or click to select</p>
+              )}
+            </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => setFile(e.target.files[0])}
+              style={{ display: "none" }} // Hide the file input
+            />
+          </div>
+        )}
+
+        {view === "list" && (
+          <div className="audio-list-container">
+            <h2>Your Audio Files</h2>
+            <ul className="audio-file-list">
+              {audioFiles.length === 0 ? (
+                <li>No files found.</li>
+              ) : (
+                audioFiles.map((audioFile) => (
+                  <li key={audioFile.id}>
+                    {audioFile.filename} - {audioFile.description} (
+                    {audioFile.category})
+                    <button onClick={() => handlePlay(audioFile)}>Play</button>
+                    <button onClick={() => handleDelete(audioFile.id)}>
+                      Delete
+                    </button>
+                  </li>
+                ))
+              )}
+            </ul>
+
+            {currentAudioUrl && (
+              <ReactAudioPlayer
+                src={currentAudioUrl}
+                controls
+                onEnded={() => setCurrentAudioUrl(null)}
+              />
+            )}
+          </div>
+        )}
+
+        <div className="button-container">
+          <button onClick={() => setView("upload")} className="action-button">
+            <img src={uploadIcon} alt="Upload" className="icon" />
+          </button>
+          <button onClick={() => setView("list")} className="action-button">
+            <img src={listIcon} alt="List" className="icon" />
+          </button>
+        </div>
+      </div>
+
+      {view === "upload" && (
+        <div className="details-container">
+          {file && (
+            <>
+              <input
+                type="text"
+                placeholder="Audio Description"
+                value={audioDetails.description}
+                onChange={(e) =>
+                  setAudioDetails({
+                    ...audioDetails,
+                    description: e.target.value,
+                  })
+                }
+                className="input-field"
+              />
+              <input
+                type="text"
+                placeholder="Audio Category"
+                value={audioDetails.category}
+                onChange={(e) =>
+                  setAudioDetails({
+                    ...audioDetails,
+                    category: e.target.value,
+                  })
+                }
+                className="input-field"
+              />
+              <button onClick={handleFileUpload} className="upload-button">
+                Upload
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };
