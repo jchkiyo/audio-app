@@ -8,78 +8,33 @@ h1 {
   font-weight: bold; /* Optional */
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh; /* Make the container fill the viewport height */
-  margin-top: 50px; /* Adjust this value to shift the container down */
-}
-.mainContainer {
-  flex-direction: column;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+body {
+  background-image: url("../images/login_background.jpg"); /* Background image */
+  background-size: cover; /* Cover the whole background */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent the background from repeating */
+  margin: 0; /* Remove default margin */
+  height: 100vh; /* Full height of the viewport */
+  display: flex; /* Use flexbox to center */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
 }
 
-.titleContainer {
-  display: flex;
-  flex-direction: column;
-  font-size: 64px;
-  font-weight: bolder;
-  align-items: center;
-  justify-content: center;
-}
-
-.resultContainer,
-.historyItem {
-  flex-direction: row;
-  display: flex;
-  width: 400px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.historyContainer {
-  flex-direction: column;
-  display: flex;
-  height: 200px;
-  align-items: center;
-  flex-grow: 5;
-  justify-content: flex-start;
-}
-
-.buttonContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 260px;
-}
-
-.inputContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.input-container {
-  margin-bottom: 0.2em; /* Add space between input boxes */
-}
-
-.inputBox {
-  height: 48px;
-  width: 400px;
-  font-size: large;
-  border-radius: 8px;
-  border: 1px solid grey;
-  padding-left: 8px;
+.container-login {
+  background-color: white; /* Set container background to white */
+  border-radius: 8px; /* Optional: add some border radius */
+  padding: 10px; /* Add some padding for spacing */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for depth */
+  width: 380px; /* Smaller width */
+  height: 500px; /* Smaller height */
+  display: flex; /* Use flexbox for inner content */
+  flex-direction: column; /* Arrange children vertically */
+  justify-content: center; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
 }
 
 .login-form {
+  margin: 25px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,7 +42,7 @@ h1 {
 }
 
 .login-button {
-  margin: 10px;
+  margin: 20px;
   padding: 10px;
   background-color: #4caf50;
   color: white;
@@ -101,6 +56,12 @@ h1 {
   background-color: #45a049;
 }
 
+.register-prompt {
+  margin: 10px 0;
+  display: flex; /* Use flexbox for centering */
+  justify-content: center; /* Center the content horizontally */
+}
+
 .register-prompt p {
   margin: 5px 0; /* Adjust this to control spacing */
 }
@@ -112,7 +73,7 @@ h1 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  padding: 0.2em 0.5em;
+  padding: 0.5em 1em; /* Adjust padding for better appearance */
 }
 
 .register-button:hover {

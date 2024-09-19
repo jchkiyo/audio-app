@@ -34,7 +34,7 @@ const LoginForm = ({ setToken, setRole, setUsername }) => {
   };
 
   return (
-    <div className="container">
+    <div className="container-login">
       <h1>Login Form</h1>
       <form onSubmit={handleSubmit} className="login-form">
         <div className="input-container">
