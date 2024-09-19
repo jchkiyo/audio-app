@@ -1,98 +1,138 @@
-.table-container {
-  margin-top: 20px;
-  max-width: 800px; /* Set a max width for the table */
-  margin: 0 auto; /* Center the table horizontally */
-  overflow-y: auto; /* Enable vertical scrolling */
-  max-height: 400px; /* Increase the maximum height for scrolling */
-  border: 1px solid #ddd; /* Border around the table container */
-  border-radius: 8px; /* Rounded corners for the table container */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+.admin-container {
+  background-color: white; /* Set background to white */
+  padding: 20px; /* Add some padding */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+  width: 800px; /* Limit the max width */
+  height: 600px;
+  margin: 0 auto; /* Center the container */
 }
+
+.admin-actions {
+  display: flex;
+  justify-content: flex-end; /* Align logout and create buttons to the right */
+  margin-bottom: 10px; /* Space below the action buttons */
+}
+
+button {
+  margin-left: 10px; /* Space between buttons */
+  padding: 10px 15px; /* Padding for buttons */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor for buttons */
+  height: 40px; /* Fixed height for buttons */
+}
+
 table {
-  width: 100%;
+  width: 100%; /* Full width of the container */
   border-collapse: collapse;
 }
 
 th,
 td {
-  padding: 12px; /* Increase padding for better spacing */
-  border-bottom: 1px solid #ddd; /* Border between rows */
-  text-align: left;
-  font-size: 16px; /* Increase font size for readability */
+  padding: 10px;
+  border: 1px solid #ddd; /* Border for table cells */
+  text-align: left; /* Align text to the left */
 }
 
 th {
-  background-color: #f2f2f2; /* Light background for headers */
-  font-weight: bold;
-  border-top: 1px solid #ddd; /* Border on top of header */
+  background-color: #f2f2f2; /* Light gray for header */
 }
 
-tbody tr:nth-child(even) {
-  background-color: #f9f9f9; /* Alternate row colors */
-}
-
-tbody tr:hover {
-  background-color: #e2e2e2; /* Highlight row on hover */
-}
-
-/* Button styles */
-button {
-  padding: 8px 12px; /* Add padding to buttons */
-  margin: 5px; /* Space between buttons */
-  border: none;
-  border-radius: 4px; /* Rounded corners for buttons */
-  cursor: pointer; /* Pointer cursor for buttons */
-  transition: background-color 0.3s; /* Smooth transition for background color */
-}
-
-/* Logout button styles */
-button.logout-button {
-  background-color: #007bff; /* Blue background */
-  color: white; /* White text */
-}
-
-button.logout-button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-}
-
-/* Create New User button styles */
-button.create-button {
-  background-color: #28a745; /* Green background */
-  color: white; /* White text */
-}
-
-button.create-button:hover {
-  background-color: #218838; /* Darker green on hover */
-}
-
-/* Form styles */
-.create-user-section {
-  display: flex;
-  flex-direction: column; /* Stack input fields vertically */
-  align-items: center; /* Center align fields */
-  margin: 20px auto; /* Center the form */
-  max-width: 400px; /* Limit the width of the form */
-}
-
-input {
-  width: 100%; /* Full width */
-  padding: 10px; /* Padding inside input */
-  margin-bottom: 10px; /* Space between inputs */
-  border: 1px solid #ccc; /* Light grey border */
-  border-radius: 4px; /* Rounded corners */
-}
-
-h3 {
-  margin-bottom: 10px; /* Space below the heading */
-}
-
-.button-container {
-  display: flex;
-  justify-content: center; /* Center the buttons */
-  align-items: center; /* Align buttons vertically */
-  margin-bottom: 20px; /* Space below the button container */
+.logout-button {
+  background-color: #f44336; /* Red background */
+  color: white;
 }
 
 .create-button {
-  margin-right: 10px; /* Space between buttons */
+  background-color: #4caf50; /* Green background */
+  color: white;
+}
+
+.edit-button,
+.delete-button {
+  background-color: #f39f63; /* Blue background */
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #d27619; /* Darker blue for hover */
+}
+
+.delete-button {
+  background-color: #f44336; /* Red background */
+}
+
+.delete-button:hover {
+  background-color: #e53935; /* Darker red for hover */
+}
+
+.create-button:hover {
+  background-color: #45a049; /* Darker green for hover */
+}
+
+.create-user-button {
+  background-color: #5eb2bb; /* Green background */
+  color: white;
+  transition: background-color 0.3s ease; /* Smooth transition for hover */
+  margin-top: 10px; /* Space above the button */
+}
+
+.create-user-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+input {
+  margin-right: 10px; /* Space between inputs */
+  padding: 8px; /* Padding for inputs */
+  border: 1px solid #ccc; /* Border for inputs */
+  border-radius: 4px; /* Rounded corners for inputs */
+}
+.action-button-logout {
+  background-color: #ec635a; /* Red background */
+  color: white; /* White text */
+  padding: 10px 15px; /* Padding for button */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor */
+  height: 40px; /* Fixed height */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.action-button-logout:hover {
+  background-color: #e53935; /* Darker red on hover */
+}
+
+.action-button-create-user {
+  background-color: #4caf50; /* Green background */
+  color: white; /* White text */
+  padding: 10px 15px; /* Padding for button */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor */
+  height: 40px; /* Fixed height */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.action-button-create-user:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.table-container {
+  max-height: 200px; /* Adjust height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin-top: 20px; /* Space above the table */
+}
+.admin-header {
+  display: flex;
+  justify-content: space-between; /* Space between the search and actions */
+  align-items: center; /* Center vertically */
+  margin-bottom: 10px; /* Space below the header */
+}
+
+.search-input {
+  padding: 8px; /* Padding for the search input */
+  border: 1px solid #ccc; /* Border for the search input */
+  border-radius: 4px; /* Rounded corners */
+  width: 200px; /* Set width for the search input */
 }

@@ -43,13 +43,14 @@ body {
 
 .login-button {
   margin: 20px;
-  padding: 10px;
+  padding: 15px;
   background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease; /* Smooth transition for background color */
+  font-size: 0.9em;
 }
 
 .login-button:hover {
@@ -73,7 +74,8 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  padding: 0.5em 1em; /* Adjust padding for better appearance */
+  padding: 0.7em 1em; /* Adjust padding for better appearance */
+  font-size: 0.9em;
 }
 
 .register-button:hover {

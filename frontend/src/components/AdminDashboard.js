@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./css/AdminDashboard.css"; // Ensure to import the CSS for styling
 
 const AdminDashboard = ({ token, setToken, setRole }) => {
@@ -8,7 +8,8 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
   const [newUser, setNewUser] = useState({ username: "", password: "" });
   const [editUser, setEditUser] = useState(null);
   const [error, setError] = useState("");
-  const [isCreating, setIsCreating] = useState(false); // State for form visibility
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
       });
       fetchUsers();
       setNewUser({ username: "", password: "" });
-      setIsCreating(false); // Hide the form after creating
+      setShowCreateForm(false);
     } catch (err) {
       setError("Failed to create user");
     }
@@ -76,74 +77,63 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
     navigate("/login");
   };
 
-  const columns = useMemo(
-    () => [
-      { Header: "Username", accessor: "username" },
-      {
-        Header: "Actions",
-        accessor: "actions",
-        Cell: ({ row }) => (
-          <div>
-            <button
-              className="edit-button"
-              onClick={() => setEditUser(row.original)}
-            >
-              Edit
-            </button>
-            <button
-              className="delete-button"
-              onClick={() => handleDeleteUser(row.original.id)}
-            >
-              Delete
-            </button>
-          </div>
-        ),
-      },
-    ],
-    []
+  // Filter users based on search term
+  const filteredUsers = users.filter((user) =>
+    user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div style={{ textAlign: "center" }}>
+    <div className="admin-container">
       <h1>Admin Dashboard</h1>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <div className="button-container">
-        <button
-          className="create-button"
-          onClick={() => setIsCreating(!isCreating)}
-        >
-          {isCreating ? "Cancel" : "Create New User"}
-        </button>
-        <button className="logout-button" onClick={handleLogout}>
-          Logout
-        </button>
+      <div className="admin-header">
+        <input
+          type="text"
+          placeholder="Search by username"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
+
+        <div className="admin-actions">
+          <button onClick={handleLogout} className="action-button-logout">
+            Logout
+          </button>
+          <button
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            className="action-button-create-user"
+          >
+            Create User
+          </button>
+        </div>
       </div>
 
       <div className="table-container">
         <table>
           <thead>
             <tr>
-              {columns.map((column) => (
-                <th key={column.accessor}>{column.Header}</th>
-              ))}
+              <th>Username</th>
+              <th>Password</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <tr key={user.id}>
                 <td>{user.username}</td>
+                <td>{user.password}</td>
                 <td>
                   <button
-                    className="edit-button"
                     onClick={() => setEditUser(user)}
+                    className="edit-button"
                   >
                     Edit
                   </button>
                   <button
-                    className="delete-button"
                     onClick={() => handleDeleteUser(user.id)}
+                    className="delete-button"
                   >
                     Delete
                   </button>
@@ -153,29 +143,6 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
           </tbody>
         </table>
       </div>
-
-      {isCreating && (
-        <form onSubmit={handleCreateUser} className="create-user-section">
-          <h3>Create New User</h3>
-          <input
-            type="text"
-            placeholder="Username"
-            value={newUser.username}
-            onChange={(e) =>
-              setNewUser({ ...newUser, username: e.target.value })
-            }
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={newUser.password}
-            onChange={(e) =>
-              setNewUser({ ...newUser, password: e.target.value })
-            }
-          />
-          <button type="submit">Create User</button>
-        </form>
-      )}
 
       {editUser && (
         <form onSubmit={handleUpdateUser}>
@@ -201,6 +168,33 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
             Cancel
           </button>
         </form>
+      )}
+
+      {showCreateForm && (
+        <div>
+          <h3>Create New User</h3>
+          <form onSubmit={handleCreateUser}>
+            <input
+              type="text"
+              placeholder="Username"
+              value={newUser.username}
+              onChange={(e) =>
+                setNewUser({ ...newUser, username: e.target.value })
+              }
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={newUser.password}
+              onChange={(e) =>
+                setNewUser({ ...newUser, password: e.target.value })
+              }
+            />
+            <button type="submit" className="create-user-button">
+              Create User
+            </button>
+          </form>
+        </div>
       )}
     </div>
   );

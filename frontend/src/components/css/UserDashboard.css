@@ -1,12 +1,14 @@
 .container {
+  background-color: white;
   text-align: center;
   margin: 0 auto;
-  height: 80vh;
-  width: 80vw; /* Set to 80% of the viewport width */
+  height: 600px;
+  width: 800px; /* Set to 80% of the viewport width */
   display: flex; /* Use flexbox for layout */
   flex-direction: column; /* Stack children vertically */
   align-items: center; /* Center children horizontally */
-  max-width: 800px;
+  border-radius: 20px;
+  padding: 20px;
 }
 
 .left-right-container {
