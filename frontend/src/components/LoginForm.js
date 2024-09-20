@@ -8,10 +8,13 @@ const LoginForm = ({ setToken, setRole, setUsername }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const apiUrl = process.env.REACT_APP_API_URL; // Get the API URL from environment variable
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/login", {
+      const response = await axios.post(`${apiUrl}/login`, {
+        // Updated URL
         username,
         password,
       });

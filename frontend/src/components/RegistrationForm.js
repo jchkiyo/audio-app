@@ -9,10 +9,13 @@ const RegistrationForm = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const apiUrl = process.env.REACT_APP_API_URL; // Get the API URL from environment variable
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/register", {
+      const response = await axios.post(`${apiUrl}/register`, {
+        // Updated URL
         username,
         password,
       });
@@ -20,7 +23,7 @@ const RegistrationForm = () => {
       alert("Registration successful!"); // Prompt success message
       navigate("/login"); // Navigate back to the login page
     } catch (error) {
-      alert(error.response.data.message); // Show the error message
+      setError(error.response?.data?.message || "Registration failed."); // Show the error message
     }
   };
 

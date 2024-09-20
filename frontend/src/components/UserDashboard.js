@@ -20,6 +20,8 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
+  const apiUrl = process.env.REACT_APP_API_URL; // Get the API URL from environment variable
+
   useEffect(() => {
     if (view === "list") {
       fetchAudioFiles();
@@ -28,7 +30,8 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
 
   const fetchAudioFiles = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/audio-files", {
+      const response = await axios.get(`${apiUrl}/audio-files`, {
+        // Updated URL
         headers: { Authorization: `Bearer ${token}` },
       });
       setAudioFiles(response.data);
@@ -59,7 +62,8 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
     formData.append("category", audioDetails.category);
 
     try {
-      await axios.post("http://localhost:5000/upload", formData, {
+      await axios.post(`${apiUrl}/upload`, formData, {
+        // Updated URL
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("File uploaded successfully!");
@@ -86,7 +90,7 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
   const handleDelete = async (fileId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/audio-files/${fileId}`,
+        `${apiUrl}/audio-files/${fileId}`, // Updated URL
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -102,7 +106,7 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
   };
 
   const handlePlay = async (audioFile) => {
-    const audioUrl = `http://localhost:5000/audio-files/${audioFile.id}`;
+    const audioUrl = `${apiUrl}/audio-files/${audioFile.id}`; // Updated URL
 
     try {
       const response = await axios.get(audioUrl, {
@@ -240,7 +244,6 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
               >
                 <img src={uploadIcon} alt="Upload" className="icon" />
               </button>
-              {/* Horizontal line between icons */}
               <button
                 onClick={() => setView("list")}
                 className="action-button"

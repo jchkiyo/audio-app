@@ -1,16 +1,20 @@
 version: "3.8"
 
 services:
-  backend:
-    image: jchkiyo/audio-app-backend:latest # Use the pulled backend image
-    ports:
-      - "5000:5000"
-    environment:
-      - JWT_SECRET_KEY=your-secret-key # Set your secret key
-    restart: "no" # Ensure it doesn't restart automatically
-
   frontend:
-    image: jchkiyo/audio-app-frontend:latest # Use the pulled frontend image
+    build:
+      context: ./frontend # Path to your frontend directory
+    image: audio-app-frontend # Name of the image after building
+    environment:
+      - REACT_APP_API_URL=http://backend:5000 # Set environment variable
     ports:
       - "3000:3000"
-    restart: "no" # Ensure it doesn't restart automatically
+    depends_on:
+      - backend # Ensure backend is started before frontend
+
+  backend:
+    build:
+      context: ./backend # Path to your backend directory
+    image: audio-app-backend # Name of the image after building
+    ports:
+      - "5000:5000"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./css/AdminDashboard.css"; // Ensure to import the CSS for styling
+import "./css/AdminDashboard.css";
 
 const AdminDashboard = ({ token, setToken, setRole }) => {
   const [users, setUsers] = useState([]);
@@ -20,9 +20,11 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
     fetchUsers();
   }, [token]);
 
+  const apiUrl = process.env.REACT_APP_API_URL; // Get the API URL from the environment variable
+
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/admin/users", {
+      const response = await axios.get(`${apiUrl}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(response.data);
@@ -34,7 +36,8 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
   const handleCreateUser = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/admin/users", newUser, {
+      await axios.post(`${apiUrl}/admin/users`, newUser, {
+        // Updated URL
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchUsers();
@@ -49,7 +52,7 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:5000/admin/users/${editUser.id}`,
+        `${apiUrl}/admin/users/${editUser.id}`, // Updated URL
         editUser,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -64,7 +67,8 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete(`http://localhost:5000/admin/users/${userId}`, {
+      await axios.delete(`${apiUrl}/admin/users/${userId}`, {
+        // Updated URL
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchUsers();
@@ -134,8 +138,7 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
                 {adminUsers.map((user) => (
                   <tr key={user.id}>
                     <td>{user.username}</td>
-                    <td>{randomMaskPassword(user.password)}</td>{" "}
-                    {/* Masked Password */}
+                    <td>{randomMaskPassword(user.password)}</td>
                     <td>
                       <button
                         onClick={() => setEditUser(user)}
@@ -188,8 +191,7 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
                 {regularUsers.map((user) => (
                   <tr key={user.id}>
                     <td>{user.username}</td>
-                    <td>{randomMaskPassword(user.password)}</td>{" "}
-                    {/* Masked Password */}
+                    <td>{randomMaskPassword(user.password)}</td>
                     <td>
                       <button
                         onClick={() => setEditUser(user)}
@@ -228,8 +230,7 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
                 onChange={(e) =>
                   setEditUser({ ...editUser, password: e.target.value })
                 }
-              />{" "}
-              {/* Add this div for button styling */}
+              />
               <button type="submit" className="edit-user-button">
                 Update User
               </button>
@@ -244,7 +245,6 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
           )}
         </div>
 
-        {/* Create User Form inside the wrap container */}
         {showCreateForm && (
           <div className="create-user-form">
             <h3>Create New User</h3>
