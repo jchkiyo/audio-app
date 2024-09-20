@@ -7,11 +7,18 @@ A simple app to showcase user authentication and database usage for upload audio
 
 Pull Docker images:
 
+```bash
+docker pull jchkiyo/audio-app-backend:latest
+docker pull jchkiyo/audio-app-frontend:latest
+```
+
 Docker compose and remove container when exit:
 
 ```bash
 docker-compose up --abort-on-container-exit
 ```
+
+It will run on localhost:3000
 
 ## For development(not needed if already have images )
 
@@ -103,7 +110,7 @@ Username cant be changed with edit feature. Have to delete the account completel
 
 User Dashboard:
 
-1. User can upload an audio file here. User will be asked to fill in the description and category but it is optional. If the file is not an audio file, user will be prompted an error.
+1. User can upload an audio file here. User will be asked to fill in the description and category but it is optional. If the file is not an audio file, user will be prompted an error. So far I have tested on audio formats such as mp3, wac and ogg.
 
 2. There are two icons on the right side of the drag box. The 1st icon allows users to upload its file, The 2nd icon allow users to see what audio file they have uploaded.
 
