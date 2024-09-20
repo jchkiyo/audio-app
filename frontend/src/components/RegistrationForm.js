@@ -1,53 +1,71 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';  // Import useNavigate for navigation
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import "./css/RegistrationForm.css"; // Import the CSS for styling
 
 const RegistrationForm = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);  // State to store the error message
-  const navigate = useNavigate();  // Initialize navigate for redirecting users
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Send the registration request to the backend
-      const response = await axios.post('http://localhost:5000/register', {
+      const response = await axios.post("http://localhost:5000/register", {
         username,
         password,
       });
 
-      // If registration is successful, redirect to the home page
       if (response.status === 201) {
-        navigate('/');  // Redirect to the Home page
+        navigate("/"); // Redirect to the Home page
       }
     } catch (error) {
-      // If there is an error, set the error state to display the error message
-      setError('Registration failed. Please try again.');
+      setError("Registration failed. Please try again.");
     }
   };
 
+  const handleBack = () => {
+    navigate("/login"); // Navigate back to the login page
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required
-      />
-      <button type="submit">Register</button>
-      
-      {/* Display error message if registration fails */}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </form>
+    <div className="container-registration">
+      <h1>Registration Form</h1>
+      <form onSubmit={handleSubmit} className="registration-form">
+        <div className="input-container">
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            required
+            className="registration-input"
+          />
+        </div>
+
+        <div className="input-container">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            required
+            className="registration-input"
+          />
+        </div>
+
+        <div clasName="button-container">
+          <button type="button" onClick={handleBack} className="back-button">
+            Back
+          </button>
+          <button type="submit" className="registration-button">
+            Register
+          </button>
+        </div>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+      </form>
+    </div>
   );
 };
 

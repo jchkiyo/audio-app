@@ -1,16 +1,80 @@
+.outer-container {
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  position: relative; /* Position relative for absolute children */
+  width: 100vw; /* Full width of the viewport */
+  height: 100vh; /* Full height of the viewport */
+  padding: 20px; /* Add some padding */
+  box-sizing: border-box; /* Include padding in the element's total width and height */
+}
+
 .admin-container {
   background-color: white; /* Set background to white */
-  padding: 20px; /* Add some padding */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-  width: 800px; /* Limit the max width */
-  height: 600px;
-  margin: 0 auto; /* Center the container */
+  width: 100%; /* Limit the max width */
+  height: 60%;
+  padding: 30px;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  margin: 20px; /* Add some margin for spacing */
+  padding: 30px;
+  width: 1000px; /* Set width */
+  height: 800px; /* Set height */
+  background-color: transparent; /* Set to transparent */
+}
+
+.create-user-form {
+  background-color: white; /* Set the background color to white */
+  border-radius: 8px; /* Optional: add some border radius */
+  padding: 30px; /* Add some padding for spacing */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for depth */
+  width: 100%; /* Set width */
+  height: 20%;
+  margin-top: 0.5em;
+}
+
+/* Remaining styles... */
+
+.admin-container {
+  background-color: white; /* Set background to white */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+  width: 100%; /* Limit the max width */
+  height: 60%;
+  padding: 30px;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  margin: 20px; /* Add some margin for spacing */
+  padding: 30px;
+  width: 1000px; /* Set width */
+  height: 800px; /* Set height */
+  background-color: transparent; /* Set to transparent */
+}
+
+.create-user-form {
+  background-color: white; /* Set the background color to white */
+  border-radius: 8px; /* Optional: add some border radius */
+  padding: 30px; /* Add some padding for spacing */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for depth */
+  width: 100%; /* Set width */
+  height: 20%;
+  margin-top: 0.5em;
 }
 
 .admin-actions {
   display: flex;
-  justify-content: flex-end; /* Align logout and create buttons to the right */
+  justify-content: flex-end; /* Align buttons to the right */
   margin-bottom: 10px; /* Space below the action buttons */
 }
 
@@ -36,12 +100,32 @@ td {
 }
 
 th {
-  background-color: #f2f2f2; /* Light gray for header */
+  background-color: #ffffff; /* Light gray for header */
+}
+
+.table-container {
+  max-height: 300px; /* Adjust height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin-top: 20px; /* Space above the table */
+  background-color: #ffffff;
 }
 
 .logout-button {
-  background-color: #f44336; /* Red background */
-  color: white;
+  position: absolute; /* Position it absolutely within the outer container */
+  top: 20px; /* Distance from the top */
+  right: 20px; /* Distance from the right */
+  background-color: #ec635a; /* Red background */
+  color: white; /* White text */
+  padding: 10px 15px; /* Padding for button */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor */
+  height: 40px; /* Fixed height */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.logout-button:hover {
+  background-color: #e53935; /* Darker red on hover */
 }
 
 .create-button {
@@ -88,6 +172,7 @@ input {
   border: 1px solid #ccc; /* Border for inputs */
   border-radius: 4px; /* Rounded corners for inputs */
 }
+
 .action-button-logout {
   background-color: #ec635a; /* Red background */
   color: white; /* White text */
@@ -118,11 +203,6 @@ input {
   background-color: #45a049; /* Darker green on hover */
 }
 
-.table-container {
-  max-height: 200px; /* Adjust height as needed */
-  overflow-y: auto; /* Enable vertical scrolling */
-  margin-top: 20px; /* Space above the table */
-}
 .admin-header {
   display: flex;
   justify-content: space-between; /* Space between the search and actions */

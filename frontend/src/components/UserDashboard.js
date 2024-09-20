@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import ReactAudioPlayer from "react-audio-player"; // Import React Audio Player
+import ReactAudioPlayer from "react-audio-player";
 import "./css/UserDashboard.css"; // Import your CSS for styling
-import uploadIcon from "./images/upload.svg"; // Import your upload icon
-import listIcon from "./images/list.svg"; // Import your list icon
+import uploadIcon from "./images/upload.svg";
+import listIcon from "./images/list.svg";
 
 const UserDashboard = ({ username, token, setToken, setRole }) => {
   const [audioFiles, setAudioFiles] = useState([]);
@@ -15,6 +15,7 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
     category: "",
   });
   const [view, setView] = useState("upload");
+  const [error, setError] = useState(null); // State to store error messages
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -35,9 +36,19 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
     }
   };
 
+  const isAudioFile = (file) => {
+    const audioTypes = ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp3"];
+    return file && audioTypes.includes(file.type);
+  };
+
   const handleFileUpload = async () => {
     if (!file) {
-      console.error("No file selected for upload.");
+      setError("No file selected for upload.");
+      return;
+    }
+
+    if (!isAudioFile(file)) {
+      setError("Please upload a valid audio file (mp3, wav, ogg).");
       return;
     }
 
@@ -63,7 +74,12 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
   const resetForm = () => {
     setFile(null);
     setAudioDetails({ description: "", category: "" });
+    setError(null); // Clear the error message
     fileInputRef.current.value = ""; // Clear the file input visually
+  };
+
+  const handleCancelUpload = () => {
+    resetForm(); // Clear the form and reset state
   };
 
   const handleDelete = async (fileId) => {
@@ -127,10 +143,7 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
   };
 
   return (
-    <div className="container">
-      <h1 style={{ display: "inline-block" }}>
-        Welcome, {username || "Guest"}!{" "}
-      </h1>
+    <div className="outer-container">
       <button
         onClick={handleLogout}
         className="logout-button"
@@ -138,94 +151,105 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
       >
         Logout
       </button>
-      <p style={{ clear: "both" }}>Manage your audio files and settings.</p>
 
-      <div className="left-right-container">
-        {view === "upload" && (
-          <div className="upload-container">
-            <div
-              className="drag-drop-area"
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              onClick={openFileDialog} // Open file dialog on click
-            >
-              {file ? (
-                <p>File ready: {file.name}</p>
-              ) : (
-                <p>Drag and drop an audio file here or click to select</p>
-              )}
-            </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={(e) => setFile(e.target.files[0])}
-              style={{ display: "none" }} // Hide the file input
-            />
-          </div>
-        )}
-
-        {view === "list" && (
-          <div className="audio-list-container">
-            <h2>Your Audio Files</h2>
-            <div className="audio-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>File Name</th>
-                    <th>Description</th>
-                    <th>Category</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {audioFiles.length === 0 ? (
-                    <tr>
-                      <td colSpan="4">No files found.</td>
-                    </tr>
+      <div className="wrap">
+        <div className="container">
+          <h1 style={{ display: "inline-block" }}>
+            Welcome, {username || "Guest"}!
+          </h1>
+          <p style={{ clear: "both" }}>Manage your audio files and settings.</p>
+          <div className="left-right-container">
+            {view === "upload" && (
+              <div className="upload-container">
+                <div
+                  className="drag-drop-area"
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                  onClick={openFileDialog} // Open file dialog on click
+                >
+                  {file ? (
+                    <p>File ready: {file.name}</p>
                   ) : (
-                    audioFiles.map((audioFile) => (
-                      <tr key={audioFile.id}>
-                        <td>{audioFile.filename}</td>
-                        <td>{audioFile.description}</td>
-                        <td>{audioFile.category}</td>
-                        <td>
-                          <button onClick={() => handlePlay(audioFile)}>
-                            Play
-                          </button>
-                          <button onClick={() => handleDelete(audioFile.id)}>
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                    <p>Drag and drop an audio file here or click to select</p>
                   )}
-                </tbody>
-              </table>
-            </div>
-
-            {currentAudioUrl && (
-              <ReactAudioPlayer
-                src={currentAudioUrl}
-                controls
-                onEnded={() => setCurrentAudioUrl(null)}
-              />
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={(e) => setFile(e.target.files[0])}
+                  style={{ display: "none" }} // Hide the file input
+                />
+                {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+                {/* Show error message */}
+              </div>
             )}
+
+            {view === "list" && (
+              <div className="audio-list-container">
+                <h2>Your Audio Files</h2>
+                <div className="audio-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>File Name</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {audioFiles.length === 0 ? (
+                        <tr>
+                          <td colSpan="4">No files found.</td>
+                        </tr>
+                      ) : (
+                        audioFiles.map((audioFile) => (
+                          <tr key={audioFile.id}>
+                            <td>{audioFile.filename}</td>
+                            <td>{audioFile.description}</td>
+                            <td>{audioFile.category}</td>
+                            <td>
+                              <button onClick={() => handlePlay(audioFile)}>
+                                Play
+                              </button>
+                              <button
+                                onClick={() => handleDelete(audioFile.id)}
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {currentAudioUrl && (
+                  <ReactAudioPlayer
+                    src={currentAudioUrl}
+                    controls
+                    onEnded={() => setCurrentAudioUrl(null)}
+                  />
+                )}
+              </div>
+            )}
+
+            <div className="button-container">
+              <button
+                onClick={() => setView("upload")}
+                className="action-button"
+              >
+                <img src={uploadIcon} alt="Upload" className="icon" />
+              </button>
+              <button onClick={() => setView("list")} className="action-button">
+                <img src={listIcon} alt="List" className="icon" />
+              </button>
+            </div>
           </div>
-        )}
-
-        <div className="button-container">
-          <button onClick={() => setView("upload")} className="action-button">
-            <img src={uploadIcon} alt="Upload" className="icon" />
-          </button>
-          <button onClick={() => setView("list")} className="action-button">
-            <img src={listIcon} alt="List" className="icon" />
-          </button>
         </div>
-      </div>
-
-      {view === "upload" && (
-        <div className="details-container">
-          {file && (
+        {file && ( // Only show details-container if a file is uploaded
+          <div className="details-container">
             <>
               <input
                 type="text"
@@ -251,13 +275,19 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
                 }
                 className="input-field"
               />
-              <button onClick={handleFileUpload} className="upload-button">
-                Upload
-              </button>
+
+              <div className="button-container-2">
+                <button onClick={handleFileUpload} className="upload-button">
+                  Upload
+                </button>
+                <button onClick={handleCancelUpload} className="cancel-button">
+                  Cancel
+                </button>
+              </div>
             </>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

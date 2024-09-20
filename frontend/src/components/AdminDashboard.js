@@ -83,119 +83,121 @@ const AdminDashboard = ({ token, setToken, setRole }) => {
   );
 
   return (
-    <div className="admin-container">
-      <h1>Admin Dashboard</h1>
+    <div className="outer-container">
+      <button onClick={handleLogout} className="logout-button">
+        Logout
+      </button>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <div className="admin-header">
-        <input
-          type="text"
-          placeholder="Search by username"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-
-        <div className="admin-actions">
-          <button onClick={handleLogout} className="action-button-logout">
-            Logout
-          </button>
-          <button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            className="action-button-create-user"
-          >
-            Create User
-          </button>
-        </div>
-      </div>
-
-      <div className="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Password</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.map((user) => (
-              <tr key={user.id}>
-                <td>{user.username}</td>
-                <td>{user.password}</td>
-                <td>
-                  <button
-                    onClick={() => setEditUser(user)}
-                    className="edit-button"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteUser(user.id)}
-                    className="delete-button"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {editUser && (
-        <form onSubmit={handleUpdateUser}>
-          <h3>Edit User</h3>
-          <input
-            type="text"
-            placeholder="Username"
-            value={editUser.username}
-            onChange={(e) =>
-              setEditUser({ ...editUser, username: e.target.value })
-            }
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={editUser.password}
-            onChange={(e) =>
-              setEditUser({ ...editUser, password: e.target.value })
-            }
-          />
-          <button type="submit">Update User</button>
-          <button type="button" onClick={() => setEditUser(null)}>
-            Cancel
-          </button>
-        </form>
-      )}
-
-      {showCreateForm && (
-        <div>
-          <h3>Create New User</h3>
-          <form onSubmit={handleCreateUser}>
+      <div className="wrap">
+        <div className="admin-container">
+          <h1>Admin Dashboard</h1>
+          <div className="admin-actions">
             <input
               type="text"
-              placeholder="Username"
-              value={newUser.username}
-              onChange={(e) =>
-                setNewUser({ ...newUser, username: e.target.value })
-              }
+              placeholder="Search by username"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
             />
-            <input
-              type="password"
-              placeholder="Password"
-              value={newUser.password}
-              onChange={(e) =>
-                setNewUser({ ...newUser, password: e.target.value })
-              }
-            />
-            <button type="submit" className="create-user-button">
+            <button
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="action-button-create-user"
+            >
               Create User
             </button>
-          </form>
+          </div>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Password</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td>{user.username}</td>
+                    <td>{user.password}</td>
+                    <td>
+                      <button
+                        onClick={() => setEditUser(user)}
+                        className="edit-button"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="delete-button"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {editUser && (
+            <form onSubmit={handleUpdateUser}>
+              <h3>Edit User</h3>
+              <input
+                type="text"
+                placeholder="Username"
+                value={editUser.username}
+                onChange={(e) =>
+                  setEditUser({ ...editUser, username: e.target.value })
+                }
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={editUser.password}
+                onChange={(e) =>
+                  setEditUser({ ...editUser, password: e.target.value })
+                }
+              />
+              <button type="submit">Update User</button>
+              <button type="button" onClick={() => setEditUser(null)}>
+                Cancel
+              </button>
+            </form>
+          )}
         </div>
-      )}
+
+        {/* Create User Form inside the wrap container */}
+        {showCreateForm && (
+          <div className="create-user-form">
+            <h3>Create New User</h3>
+            <form onSubmit={handleCreateUser}>
+              <input
+                type="text"
+                placeholder="Username"
+                value={newUser.username}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, username: e.target.value })
+                }
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={newUser.password}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, password: e.target.value })
+                }
+              />
+              <button type="submit" className="create-user-button">
+                Create User
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
