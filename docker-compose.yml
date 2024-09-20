@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    image: my-backend # Use the built backend image
+    image: jchkiyo/audio-app-backend:latest # Use the pulled backend image
     ports:
       - "5000:5000"
     environment:
@@ -10,7 +10,7 @@ services:
     restart: "no" # Ensure it doesn't restart automatically
 
   frontend:
-    image: my-frontend # Use the built frontend image
+    image: jchkiyo/audio-app-frontend:latest # Use the pulled frontend image
     ports:
       - "3000:3000"
     restart: "no" # Ensure it doesn't restart automatically
