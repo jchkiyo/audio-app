@@ -75,12 +75,13 @@ with app.app_context():
 def register():
     data = request.get_json()
     if User.query.filter_by(username=data['username']).first():
-        return jsonify({'message': 'User already exists'}), 400
+        return jsonify({'message': 'Username has been used'}), 400  # Updated message
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
     new_user = User(username=data['username'], password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'User created'}), 201
+
 
 # Login route
 @app.route('/login', methods=['POST'])
@@ -203,10 +204,34 @@ def delete_user(user_id):
     if not user_to_delete:
         return jsonify({'message': 'User not found'}), 404
 
+    # Check if the user to delete is an admin
+    if user_to_delete.role == 'admin':
+        # Count the number of admins left
+        admin_count = User.query.filter_by(role='admin').count()
+        if admin_count <= 1:  # Only one admin left
+            return jsonify({'message': 'Cannot delete the last admin account!'}), 400
+
+    # Proceed with deletion
     db.session.delete(user_to_delete)
     db.session.commit()
 
+    # Get all audio files tied to the user
+    audio_files = AudioFile.query.filter_by(user_id=user_id).all()
+
+    # Check each audio file to see if it is still in use by other users
+    for audio_file in audio_files:
+        # Check if any other users are associated with this audio file
+        user_count = AudioFile.query.filter_by(id=audio_file.id).count()
+
+        if user_count == 0:  # No users tied to this audio file
+            # Optionally delete from the filesystem
+            audio_file_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file.filename)
+            if os.path.exists(audio_file_path):
+                os.remove(audio_file_path)
+
     return jsonify({'message': f'User {user_to_delete.username} deleted successfully.'}), 200
+
+
 
 @app.route('/admin/users/<int:user_id>', methods=['PUT'])
 @jwt_required()

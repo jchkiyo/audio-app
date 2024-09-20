@@ -16,12 +16,11 @@ const RegistrationForm = () => {
         username,
         password,
       });
-
-      if (response.status === 201) {
-        navigate("/"); // Redirect to the Home page
-      }
+      // Handle successful registration
+      alert("Registration successful!"); // Prompt success message
+      navigate("/login"); // Navigate back to the login page
     } catch (error) {
-      setError("Registration failed. Please try again.");
+      alert(error.response.data.message); // Show the error message
     }
   };
 
@@ -55,7 +54,7 @@ const RegistrationForm = () => {
           />
         </div>
 
-        <div clasName="button-container">
+        <div className="button-container-3">
           <button type="button" onClick={handleBack} className="back-button">
             Back
           </button>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import ReactAudioPlayer from "react-audio-player";
+import AudioPlayer from "react-h5-audio-player"; // Import the new audio player
+import "react-h5-audio-player/lib/styles.css"; // Import styles for the player
 import "./css/UserDashboard.css"; // Import your CSS for styling
 import uploadIcon from "./images/upload.svg";
 import listIcon from "./images/list.svg";
@@ -143,7 +144,7 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
   };
 
   return (
-    <div className="outer-container">
+    <div className="wrap">
       <button
         onClick={handleLogout}
         className="logout-button"
@@ -152,7 +153,7 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
         Logout
       </button>
 
-      <div className="wrap">
+      <div className="outer-container">
         <div className="container">
           <h1 style={{ display: "inline-block" }}>
             Welcome, {username || "Guest"}!
@@ -179,8 +180,7 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
                   onChange={(e) => setFile(e.target.files[0])}
                   style={{ display: "none" }} // Hide the file input
                 />
-                {error && <p style={{ color: "red" }}>{error}</p>}{" "}
-                {/* Show error message */}
+                {error && <p style={{ color: "red" }}>{error}</p>}
               </div>
             )}
 
@@ -209,11 +209,15 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
                             <td>{audioFile.description}</td>
                             <td>{audioFile.category}</td>
                             <td>
-                              <button onClick={() => handlePlay(audioFile)}>
+                              <button
+                                onClick={() => handlePlay(audioFile)}
+                                className="play-button"
+                              >
                                 Play
                               </button>
                               <button
                                 onClick={() => handleDelete(audioFile.id)}
+                                className="delete-button"
                               >
                                 Delete
                               </button>
@@ -224,30 +228,30 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
                     </tbody>
                   </table>
                 </div>
-
-                {currentAudioUrl && (
-                  <ReactAudioPlayer
-                    src={currentAudioUrl}
-                    controls
-                    onEnded={() => setCurrentAudioUrl(null)}
-                  />
-                )}
               </div>
             )}
 
+            {/* Button container for navigating between upload and list views */}
             <div className="button-container">
               <button
                 onClick={() => setView("upload")}
                 className="action-button"
+                title="Upload"
               >
                 <img src={uploadIcon} alt="Upload" className="icon" />
               </button>
-              <button onClick={() => setView("list")} className="action-button">
-                <img src={listIcon} alt="List" className="icon" />
+              {/* Horizontal line between icons */}
+              <button
+                onClick={() => setView("list")}
+                className="action-button"
+                title="Audio List"
+              >
+                <img src={listIcon} alt="List" className="audio-list-icon" />
               </button>
             </div>
           </div>
         </div>
+
         {file && ( // Only show details-container if a file is uploaded
           <div className="details-container">
             <>
@@ -275,7 +279,6 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
                 }
                 className="input-field"
               />
-
               <div className="button-container-2">
                 <button onClick={handleFileUpload} className="upload-button">
                   Upload
@@ -286,6 +289,15 @@ const UserDashboard = ({ username, token, setToken, setRole }) => {
               </div>
             </>
           </div>
+        )}
+
+        {currentAudioUrl && ( // Display audio player below .container
+          <AudioPlayer
+            src={currentAudioUrl}
+            controls
+            onEnded={() => setCurrentAudioUrl(null)}
+            style={{ marginTop: "20px" }} // Add margin top here
+          />
         )}
       </div>
     </div>

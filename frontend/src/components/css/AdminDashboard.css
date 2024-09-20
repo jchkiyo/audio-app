@@ -1,4 +1,29 @@
-.outer-container {
+/* General Styles */
+p {
+  font-family: "Roboto", sans-serif; /* Use the Roboto font */
+}
+
+h1 {
+  font-family: "Roboto", sans-serif; /* Use the Roboto font */
+  font-size: 2em; /* Adjust size as needed */
+  font-weight: bold; /* Optional */
+}
+
+/* Body Styles */
+body {
+  background-image: url("../images/login_background.jpg"); /* Background image */
+  background-size: cover; /* Cover the whole background */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent the background from repeating */
+  margin: 0; /* Remove default margin */
+  height: 100vh; /* Full height of the viewport */
+  display: flex; /* Use flexbox to center */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+}
+
+/* Wrap Styles */
+.wrap {
   display: flex;
   flex-direction: column; /* Stack elements vertically */
   align-items: center; /* Center items horizontally */
@@ -10,26 +35,29 @@
   box-sizing: border-box; /* Include padding in the element's total width and height */
 }
 
-.admin-container {
-  background-color: white; /* Set background to white */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-  width: 100%; /* Limit the max width */
-  height: 60%;
-  padding: 30px;
-}
-
-.wrap {
+/* Outer Container Styles */
+.outer-container {
   display: flex;
   flex-direction: column;
   align-items: center; /* Center horizontally */
   margin: 20px; /* Add some margin for spacing */
   padding: 30px;
-  width: 1000px; /* Set width */
+  width: 1100px; /* Set width */
   height: 800px; /* Set height */
   background-color: transparent; /* Set to transparent */
 }
 
+/* Admin Container Styles */
+.admin-container {
+  background-color: white; /* Set background to white */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+  width: 100%; /* Limit the max width */
+  height: 80%; /* Increase height to 70% */
+  padding: 30px;
+}
+
+/* Create User Form Styles */
 .create-user-form {
   background-color: white; /* Set the background color to white */
   border-radius: 8px; /* Optional: add some border radius */
@@ -40,44 +68,16 @@
   margin-top: 0.5em;
 }
 
-/* Remaining styles... */
-
-.admin-container {
-  background-color: white; /* Set background to white */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-  width: 100%; /* Limit the max width */
-  height: 60%;
-  padding: 30px;
-}
-
-.wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center horizontally */
-  margin: 20px; /* Add some margin for spacing */
-  padding: 30px;
-  width: 1000px; /* Set width */
-  height: 800px; /* Set height */
-  background-color: transparent; /* Set to transparent */
-}
-
-.create-user-form {
-  background-color: white; /* Set the background color to white */
-  border-radius: 8px; /* Optional: add some border radius */
-  padding: 30px; /* Add some padding for spacing */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: add a shadow for depth */
-  width: 100%; /* Set width */
-  height: 20%;
-  margin-top: 0.5em;
-}
-
+/* Admin Actions Styles */
 .admin-actions {
   display: flex;
+  flex-direction: row;
   justify-content: flex-end; /* Align buttons to the right */
+  align-items: center; /* Center items vertically */
   margin-bottom: 10px; /* Space below the action buttons */
 }
 
+/* Button Styles */
 button {
   margin-left: 10px; /* Space between buttons */
   padding: 10px 15px; /* Padding for buttons */
@@ -87,6 +87,7 @@ button {
   height: 40px; /* Fixed height for buttons */
 }
 
+/* Table Styles */
 table {
   width: 100%; /* Full width of the container */
   border-collapse: collapse;
@@ -103,13 +104,14 @@ th {
   background-color: #ffffff; /* Light gray for header */
 }
 
+/* Table Container Styles */
 .table-container {
-  max-height: 300px; /* Adjust height as needed */
+  max-height: 150px; /* Adjust height as needed */
   overflow-y: auto; /* Enable vertical scrolling */
-  margin-top: 20px; /* Space above the table */
   background-color: #ffffff;
 }
 
+/* Logout Button Styles */
 .logout-button {
   position: absolute; /* Position it absolutely within the outer container */
   top: 20px; /* Distance from the top */
@@ -128,6 +130,7 @@ th {
   background-color: #e53935; /* Darker red on hover */
 }
 
+/* Button Styles for Actions */
 .create-button {
   background-color: #4caf50; /* Green background */
   color: white;
@@ -135,7 +138,7 @@ th {
 
 .edit-button,
 .delete-button {
-  background-color: #f39f63; /* Blue background */
+  background-color: #3a7ec7; /* Blue background */
   color: white;
 }
 
@@ -155,6 +158,7 @@ th {
   background-color: #45a049; /* Darker green for hover */
 }
 
+/* Create User Button Styles */
 .create-user-button {
   background-color: #5eb2bb; /* Green background */
   color: white;
@@ -166,6 +170,7 @@ th {
   background-color: #45a049; /* Darker green on hover */
 }
 
+/* Input Styles */
 input {
   margin-right: 10px; /* Space between inputs */
   padding: 8px; /* Padding for inputs */
@@ -173,6 +178,7 @@ input {
   border-radius: 4px; /* Rounded corners for inputs */
 }
 
+/* Logout Action Button Styles */
 .action-button-logout {
   background-color: #ec635a; /* Red background */
   color: white; /* White text */
@@ -188,6 +194,7 @@ input {
   background-color: #e53935; /* Darker red on hover */
 }
 
+/* Create User Action Button Styles */
 .action-button-create-user {
   background-color: #4caf50; /* Green background */
   color: white; /* White text */
@@ -203,6 +210,22 @@ input {
   background-color: #45a049; /* Darker green on hover */
 }
 
+.edit-user-button {
+  background-color: #4caf50; /* Green background */
+  color: white; /* White text */
+  padding: 10px 15px; /* Padding for button */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor */
+  height: 40px; /* Fixed height */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.edit-user-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+/* Admin Header Styles */
 .admin-header {
   display: flex;
   justify-content: space-between; /* Space between the search and actions */
@@ -210,9 +233,31 @@ input {
   margin-bottom: 10px; /* Space below the header */
 }
 
+/* Search Input Styles */
 .search-input {
   padding: 8px; /* Padding for the search input */
   border: 1px solid #ccc; /* Border for the search input */
   border-radius: 4px; /* Rounded corners */
   width: 200px; /* Set width for the search input */
+  margin-right: 10px; /* Space between input and button */
+}
+
+/* Dropdown Styles */
+select {
+  padding: 10px; /* Add padding for better spacing */
+  border: 1px solid #ccc; /* Border color */
+  border-radius: 4px; /* Rounded corners */
+  background-color: white; /* Background color */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  margin-top: 10px; /* Space above the dropdown */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Regular User Container Styles */
+.regular-user-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 50px;
 }

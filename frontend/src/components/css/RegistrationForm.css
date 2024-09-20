@@ -1,3 +1,4 @@
+/* Container for Registration */
 .container-registration {
   background-color: white; /* White background for the form */
   border-radius: 8px; /* Rounded corners */
@@ -7,16 +8,19 @@
   margin: auto; /* Center the container */
 }
 
+/* Registration Form Layout */
 .registration-form {
   display: flex; /* Use flexbox for layout */
   flex-direction: column; /* Stack elements vertically */
   align-items: center; /* Center items */
 }
 
+/* Input Container */
 .input-container {
   margin: 10px 0; /* Space between inputs */
 }
 
+/* Registration Input Styles */
 .registration-input {
   width: 100%; /* Full width for inputs */
   padding: 10px; /* Padding for inputs */
@@ -24,6 +28,13 @@
   border-radius: 4px; /* Rounded corners */
 }
 
+/* Button Container */
+.button-container-3 {
+  display: flex; /* Use flexbox for layout */
+  flex-direction: row; /* Arrange buttons horizontally */
+}
+
+/* Registration Button Styles */
 .registration-button {
   margin-top: 10px; /* Space above the button */
   padding: 10px 15px; /* Padding for button */
@@ -38,6 +49,7 @@
   background-color: #45a049; /* Darker green on hover */
 }
 
+/* Back Button Styles */
 .back-button {
   margin-top: 10px; /* Space above the button */
   padding: 10px 15px; /* Padding for button */

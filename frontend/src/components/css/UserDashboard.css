@@ -1,4 +1,16 @@
-.wrap {
+/* General Styles */
+p {
+  font-family: "Roboto", sans-serif; /* Use the Roboto font */
+}
+
+h1 {
+  font-family: "Roboto", sans-serif; /* Use the Roboto font */
+  font-size: 2em; /* Adjust size as needed */
+  font-weight: bold; /* Optional */
+}
+
+/* Outer Container Styles */
+.outer-container {
   display: flex;
   flex-direction: column;
   align-items: center; /* Center horizontally */
@@ -8,6 +20,7 @@
   padding: 20px;
 }
 
+/* Main Container Styles */
 .container {
   background-color: white;
   text-align: center;
@@ -20,11 +33,13 @@
   padding: 20px;
 }
 
+/* Paragraph Styles within Container */
 .container p {
   font-family: "Roboto", sans-serif; /* Use the Roboto font */
   font-size: 1.1em; /* Adjust size as needed */
 }
 
+/* Details Container Styles */
 .details-container {
   display: flex;
   flex-direction: column;
@@ -37,6 +52,7 @@
   padding: 20px;
 }
 
+/* Left and Right Container Styles */
 .left-right-container {
   display: flex;
   flex-direction: row;
@@ -47,6 +63,7 @@
   margin-bottom: 40px;
 }
 
+/* Button Container Styles */
 .button-container {
   display: flex;
   flex-direction: column; /* Stack buttons vertically */
@@ -55,22 +72,33 @@
   top: 0; /* Align to the top of the parent */
 }
 
+/* Action Button Styles */
 .action-button {
   border: none;
   background: none; /* Remove background */
   cursor: pointer; /* Pointer cursor for buttons */
 }
 
+/* Icon Styles */
 .icon {
   width: 30px; /* Adjust icon size */
   height: 30px; /* Adjust icon size */
+  margin: auto;
 }
 
+.audio-list-icon {
+  margin-top: 20px;
+  width: 40px; /* Increased size for the Audio List icon */
+  height: 40px; /* Increased size for the Audio List icon */
+}
+
+/* Upload and Audio List Container Styles */
 .upload-container,
 .audio-list-container {
   flex: 1; /* Allow both sections to take equal space */
 }
 
+/* Drag and Drop Area Styles */
 .drag-drop-area {
   border: 2px dashed #ccc;
   border-radius: 8px;
@@ -86,10 +114,12 @@
   text-align: center; /* Center text within the area */
   padding-left: 64px; /* Add left padding to shift text slightly to the right */
 }
+
 .drag-drop-area:hover {
   background-color: #f9f9f9; /* Light background on hover */
 }
 
+/* Input Field Styles */
 .input-field {
   width: 80%; /* Full width */
   padding: 10px;
@@ -98,6 +128,7 @@
   margin: 10px 0;
 }
 
+/* Audio File List Styles */
 .audio-file-list {
   list-style-type: none; /* Remove default list styling */
   padding: 0; /* Remove padding */
@@ -107,6 +138,7 @@
   margin: 10px 0; /* Space between audio file items */
 }
 
+/* Logout Button Styles */
 .logout-button {
   margin-top: 20px;
   padding: 10px 15px;
@@ -121,11 +153,13 @@
   background-color: #e53935; /* Darker red on hover */
 }
 
+/* Button Container for Details */
 .button-container-2 {
   display: flex;
   flex-direction: row;
 }
 
+/* Cancel Button Styles */
 .cancel-button {
   margin-left: 10px; /* Space between upload and cancel buttons */
   padding: 10px 15px; /* Padding for the button */
@@ -140,6 +174,7 @@
   background-color: #e53935; /* Darker red on hover */
 }
 
+/* Upload Button Styles */
 .upload-button {
   padding: 10px 15px;
   background-color: #4caf50; /* Green background */
@@ -152,4 +187,39 @@
 
 .upload-button:hover {
   background-color: #45a049; /* Darker green on hover */
+}
+
+/* Audio Player Styles */
+.audio-player {
+  margin-top: 20px; /* Adjust the margin as needed */
+}
+
+/* Play Button Styles */
+.play-button {
+  background-color: #4caf50; /* Green background */
+  color: white; /* White text */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners */
+  padding: 10px 15px; /* Padding */
+  cursor: pointer; /* Pointer cursor */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.play-button:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+/* Delete Button Styles */
+.delete-button {
+  background-color: #f44336; /* Red background */
+  color: white; /* White text */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners */
+  padding: 10px 15px; /* Padding */
+  cursor: pointer; /* Pointer cursor */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.delete-button:hover {
+  background-color: #e53935; /* Darker red on hover */
 }
