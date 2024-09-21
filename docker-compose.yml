@@ -1,20 +1,28 @@
 version: "3.8"
 
 services:
-  frontend:
-    build:
-      context: ./frontend # Path to your frontend directory
-    image: audio-app-frontend # Name of the image after building
-    environment:
-      - REACT_APP_API_URL=http://backend:5000 # Set environment variable
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend # Ensure backend is started before frontend
-
   backend:
     build:
-      context: ./backend # Path to your backend directory
-    image: audio-app-backend # Name of the image after building
+      context: ./backend # Adjust to your backend directory
+      dockerfile: Dockerfile # Ensure you have a Dockerfile in your backend directory
     ports:
-      - "5000:5000"
+      - "5000:5000" # Expose port 5000 for the Flask app
+    networks:
+      - audio-network
+    environment:
+      - JWT_SECRET_KEY=your-secret-key # Set environment variables as needed
+
+  frontend:
+    build:
+      context: ./frontend # Adjust to your frontend directory
+      dockerfile: Dockerfile # Ensure you have a Dockerfile in your frontend directory
+      args:
+        REACT_APP_API_URL: http://localhost:5000 # Pass the API URL as a build argument
+    ports:
+      - "3000:3000" # Expose port 3000 for the React app
+    networks:
+      - audio-network
+
+networks:
+  audio-network:
+    driver: bridge # Use a bridge network for communication between services

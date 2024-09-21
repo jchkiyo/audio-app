@@ -125,3 +125,32 @@ Things to improve:
 2. Implement a search bar
 
 3. When navigate back to upload view, the audio player will be removed and audio will stop plying.
+
+# Uploading Docker Images to Docker Hub
+
+To upload your Docker images to Docker Hub, follow these steps:
+
+## Step 1: Log in to Docker Hub
+
+First, log in to your Docker Hub account:
+
+```bash
+docker login
+```
+
+```bash
+docker tag audio-app-frontend jchkiyo/audio-app-frontend:latest
+docker tag audio-app-backend jchkiyo/audio-app-backend:latest
+```
+
+```bash
+docker push jchkiyo/audio-app-frontend:latest
+docker push jchkiyo/audio-app-backend:latest
+```
+
+docker run -p 5000:5000 \
+ -e JWT_SECRET_KEY='your-secure-key' \
+ -e UPLOAD_FOLDER='uploads/audio' \
+ audio-app-backend
+
+docker exec -it <frontend_container_id> /bin/sh

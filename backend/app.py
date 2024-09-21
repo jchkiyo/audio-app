@@ -8,7 +8,8 @@ import os
 import shutil
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})  # Allows all origins for testing
+
 
 # Configure SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
@@ -268,4 +269,5 @@ def get_users():
     return jsonify(user_list), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
