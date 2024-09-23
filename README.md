@@ -27,14 +27,16 @@ To run this application, you need the following technologies installed:
 
 ## Setup
 
-Clone project:
+### Clone project:
 
 ```bash
 git clone https://github.com/jchkiyo/audio-app.git
 cd audio-app
 ```
 
-Run project:
+### Run project:
+
+Change backend and frontend port to your local machine if needed
 
 ```bash
 $env:BACKEND_PORT=6000; $env:FRONTEND_PORT=4000; docker-compose up
@@ -98,26 +100,28 @@ $env:BACKEND_PORT=6000; $env:FRONTEND_PORT=4000; docker-compose up
 
 ## Rebuild images:
 
-Backend:
+### Backend:
 
-````bash
+```bash
 cd backend
 docker build -t audio-app-backend .
+```
 
-Frontend:
+### Frontend:
+
 ```bash
 
 cd ../frontend
 docker build -t audio-app-frontend .
-````
+```
 
-After building, you can verify the images with:
+### After building, you can verify the images with:
 
 ```bash
 docker images
 ```
 
-## Run images:
+### Run images:
 
 ```bash
 docker run -d \
@@ -134,7 +138,7 @@ docker run -d \
  audio-app-frontend
 ```
 
-Run container in interactive mode:
+### Run container in interactive mode:
 
 ```bash
 docker exec -it <name_of_container> /bin/sh
