@@ -2,9 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    build:
-      context: ./backend # Adjust to your backend directory
-      dockerfile: Dockerfile # Ensure you have a Dockerfile in your backend directory
+    image: jchkiyo/audio-app-backend:latest # Use the pre-built Flask backend image
     ports:
       - "5000:5000" # Expose port 5000 for the Flask app
     networks:
@@ -13,11 +11,7 @@ services:
       - JWT_SECRET_KEY=your-secret-key # Set environment variables as needed
 
   frontend:
-    build:
-      context: ./frontend # Adjust to your frontend directory
-      dockerfile: Dockerfile # Ensure you have a Dockerfile in your frontend directory
-      args:
-        REACT_APP_API_URL: http://localhost:5000 # Pass the API URL as a build argument
+    image: jchkiyo/audio-app-frontend:latest # Use the pre-built React frontend image
     ports:
       - "3000:3000" # Expose port 3000 for the React app
     networks:
