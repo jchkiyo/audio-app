@@ -4,7 +4,7 @@ services:
   backend:
     image: jchkiyo/audio-app-backend:latest # Use the pre-built Flask backend image
     ports:
-      - "5000:5000" # Expose port 5000 for the Flask app
+      - "${BACKEND_PORT:-5000}:5000" # Use the environment variable BACKEND_PORT or default to 5000
     networks:
       - audio-network
     environment:
@@ -13,7 +13,7 @@ services:
   frontend:
     image: jchkiyo/audio-app-frontend:latest # Use the pre-built React frontend image
     ports:
-      - "3000:3000" # Expose port 3000 for the React app
+      - "${FRONTEND_PORT:-3000}:3000" # Use the environment variable FRONTEND_PORT or default to 3000
     networks:
       - audio-network
 

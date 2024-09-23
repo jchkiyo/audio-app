@@ -154,3 +154,5 @@ docker run -p 5000:5000 \
  audio-app-backend
 
 docker exec -it <frontend_container_id> /bin/sh
+
+$env:BACKEND_PORT=6000; $env:FRONTEND_PORT=4000; docker-compose up
