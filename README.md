@@ -38,7 +38,7 @@ cd audio-app
 
 Change backend and frontend port to your local machine if needed, look at docker-compose on how.
 
-Pull images:
+Pull images and run: (Access frontend at localhost:30000)
 
 ```bash
 docker pull jchkiyo/audio-app-frontend:latest
@@ -126,7 +126,8 @@ docker build -t audio-app-backend .
 ```bash
 
 cd ../frontend
-docker build -t audio-app-frontend .
+docker build --build-arg REACT_APP_API_URL=http://localhost:50000 -t audio-app-frontend .
+
 ```
 
 ### After building, you can verify the images with:
@@ -138,18 +139,16 @@ docker images
 ### Run images:
 
 ```bash
-docker run -d \
- --name audio-app-backend \
- -p 5000:5000 \
- -e JWT_SECRET_KEY='your-secure-key' \
- -e UPLOAD_FOLDER='uploads/audio' \
- audio-app-backend
+docker run -d `
+  --name audio-app-backend `
+  -p 50000:50000 `
+  audio-app-backend:latest
 
-docker run -d \
- --name audio-app-frontend \
- -p 3000:3000 \
- -e REACT_APP_API_URL=http://localhost:5000 \
- audio-app-frontend
+
+docker run -d `
+  --name audio-app-frontend `
+  -p 30000:30000 `
+  audio-app-frontend:latest
 ```
 
 ### Run container in interactive mode:
