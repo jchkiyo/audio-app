@@ -34,12 +34,27 @@ git clone https://github.com/jchkiyo/audio-app.git
 cd audio-app
 ```
 
-### Run project:
+## Run project:
 
-Change backend and frontend port to your local machine if needed
+Change backend and frontend port to your local machine if needed, look at docker-compose on how.
+
+Pull images:
 
 ```bash
-$env:BACKEND_PORT=6000; $env:FRONTEND_PORT=4000; docker-compose up
+docker pull jchkiyo/audio-app-frontend:latest
+docker pull jchkiyo/audio-app-backend:latest
+docker-compose up
+```
+
+Rebuild if pulled images dont work
+
+```bash
+# Set the environment variable in PowerShell
+$env:REACT_APP_API_URL = "http://localhost:50000"
+
+# Build and run the Docker Compose services
+docker-compose up --build
+
 ```
 
 # System Architecture

@@ -35,7 +35,7 @@ WORKDIR /app
 COPY --from=build /app/build .
 
 # Expose port 3000
-EXPOSE 3000
+EXPOSE 30000
 
 # Start the server
-CMD ["serve", "-s", ".", "-l", "3000"]
+CMD ["serve", "-s", ".", "-l", "30000"]

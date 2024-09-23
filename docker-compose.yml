@@ -2,21 +2,29 @@ version: "3.8"
 
 services:
   backend:
-    image: jchkiyo/audio-app-backend:latest # Use the pre-built Flask backend image
+    image: jchkiyo/audio-app-backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
-      - "${BACKEND_PORT:-5000}:5000" # Use the environment variable BACKEND_PORT or default to 5000
+      - "${BACKEND_PORT:-50000}:50000"
+    networks:
+      - audio-network
+
+  frontend:
+    image: jchkiyo/audio-app-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:50000} # Pass REACT_APP_API_URL as a build argument
+    ports:
+      - "${FRONTEND_PORT:-30000}:30000"
     networks:
       - audio-network
     environment:
-      - JWT_SECRET_KEY=your-secret-key # Set environment variables as needed
-
-  frontend:
-    image: jchkiyo/audio-app-frontend:latest # Use the pre-built React frontend image
-    ports:
-      - "${FRONTEND_PORT:-3000}:3000" # Use the environment variable FRONTEND_PORT or default to 3000
-    networks:
-      - audio-network
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-http://localhost:50000} # Environment variable for runtime
 
 networks:
   audio-network:
-    driver: bridge # Use a bridge network for communication between services
+    driver: bridge
