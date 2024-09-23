@@ -54,7 +54,6 @@ $env:REACT_APP_API_URL = "http://localhost:50000"
 
 # Build and run the Docker Compose services
 docker-compose up --build
-
 ```
 
 # System Architecture
