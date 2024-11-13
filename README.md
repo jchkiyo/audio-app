@@ -8,7 +8,7 @@ To run this application, you need the following technologies installed:
 
 1. **React**
 2. **Python (Flask)**
-3. **Docker**
+3. **Docker Hub**
 
 # Features
 
