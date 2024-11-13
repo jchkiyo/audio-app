@@ -2,6 +2,13 @@
 
 A simple React and Flask app designed to showcase user authentication and facilitate database usage for uploading audio files.
 
+## Compatibility
+
+- [ ] **Windows** - Tested
+- [ ] **MacOS** - Tested
+- [ ] **Linux** - Not tested
+
+
 # Prerequisites
 
 To run this application, you need the following technologies installed:
